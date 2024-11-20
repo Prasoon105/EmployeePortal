@@ -1,0 +1,85 @@
+package com.example.demo.service;
+
+import com.example.demo.model.Department;
+import com.example.demo.model.Employee;
+import com.example.demo.repository.EmployeeRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
+
+@Service
+public class EmployeeService {
+    @Autowired
+    private EmployeeRepository employeeRepository;
+    
+    @Autowired
+    private DepartmentService departmentService;
+
+    public List<Employee> getAllEmployees() {
+        return employeeRepository.findAll();
+    }
+
+    public Optional<Employee> getEmployeeById(Long id) {
+        return employeeRepository.findById(id);
+    }
+
+    public Employee addEmployee(Employee employee) {
+    	System.out.println(employee.toString());
+        return employeeRepository.save(employee);
+    }
+
+    public Employee updateEmployee(Long id, Employee employeeDetails) {
+        Employee employee = employeeRepository.findById(id)
+        		.orElseThrow(() -> new RuntimeException("Employee not found"));
+        employee.setFirstName(employeeDetails.getFirstName());
+        employee.setLastName(employeeDetails.getLastName());
+        employee.setDob(employeeDetails.getDob());
+        employee.setGender(employeeDetails.getGender());
+        employee.setEmail(employeeDetails.getEmail());
+        employee.setContact(employeeDetails.getContact());
+        employee.setHireDate(employeeDetails.getHireDate());
+        employee.setSalary(employeeDetails.getSalary());
+        employee.setPManagerId(employeeDetails.getPManagerId());
+        employee.setRManagerId(employeeDetails.getRManagerId());
+        return employeeRepository.save(employee);
+    }
+
+    public void deleteEmployee(Long id) {
+        employeeRepository.deleteById(id);
+    }
+    
+    public List<Employee> getEmployeesByDepartmentId(Long departmentId) {
+        return employeeRepository.findByDepartment_DepId(departmentId);
+    }
+    
+    public List<Employee> getEmployeesBySalaryRange(Double minSalary, Double maxSalary) {
+        return employeeRepository.findBySalaryBetween(minSalary, maxSalary);
+    }
+    
+    public long countEmployeesByDepartmentId(Long departmentId) {
+        return employeeRepository.countByDepartment_DepId(departmentId); 
+    }
+    
+    public List<Employee> getEmployeesByProjectId(Long projectId) {
+        return employeeRepository.findByProjects_pId(projectId);
+    }
+    
+    public long countEmployeesByProjectId(Long projectId) {
+        return employeeRepository.countByProjects_pId(projectId);
+    }
+    
+    public Employee assignDepartmentToEmployee(Long employeeId, Long departmentId) {
+        Employee employee = employeeRepository.findById(employeeId)
+                .orElseThrow(() -> new RuntimeException("Employee not found"));
+
+        Department department = departmentService.getDepartmentById(departmentId)
+                .orElseThrow(() -> new RuntimeException("Department not found"));
+
+        employee.setDepartment(department);
+
+        return employeeRepository.save(employee);
+    }
+
+}

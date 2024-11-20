@@ -1,0 +1,30 @@
+package com.example.demo.model;
+
+import jakarta.persistence.*;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotEmpty;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.util.Date;
+import java.util.Set;
+
+@Entity
+@Data 
+@AllArgsConstructor
+@NoArgsConstructor 
+@Valid
+public class Project {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long pId;
+   
+    private String pName;
+    private Long pManagerId;
+    @NotEmpty(message = "project status name is mandatory")
+    private String pStatus;
+    private Date pStartDate;
+    private Date pEndDate;
+	
+}

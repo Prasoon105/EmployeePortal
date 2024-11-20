@@ -1,0 +1,78 @@
+package com.example.demo.controller;
+
+import com.example.demo.model.Department;
+import com.example.demo.model.Employee;
+import com.example.demo.service.DepartmentService;
+
+import jakarta.validation.Valid;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+@RestController
+@RequestMapping("/api/departments")
+public class DepartmentController {
+
+    @Autowired
+    private DepartmentService departmentService;
+
+    @GetMapping
+    public List<Department> getAllDepartments() {
+        return departmentService.getAllDepartments();
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Department> getDepartmentById(@PathVariable Long id) {
+        Optional<Department> department = departmentService.getDepartmentById(id);
+        return department.map(ResponseEntity::ok)
+                         .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @PostMapping
+    public ResponseEntity<Map<String, String>> createDepartment(@Valid @RequestBody Department department) {
+    	Department savedDepartment = departmentService.addDepartment(department);
+        
+        Map<String, String> responseMessage = new HashMap<>();
+        responseMessage.put("message", "Department added successfully!");
+        responseMessage.put("departmentId", String.valueOf(savedDepartment.getDepId()));
+        
+        return new ResponseEntity<>(responseMessage, HttpStatus.CREATED);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Object> updateDepartment(@PathVariable Long id, @Valid @RequestBody Department departmentDetails) {
+        Department updatedDepartment = departmentService.updateDepartment(id, departmentDetails);
+        
+        if (updatedDepartment != null) {
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "Department updated successfully");
+            response.put("department", updatedDepartment.toString());
+            
+            return ResponseEntity.ok(response);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Department not found");
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteDepartment(@PathVariable Long id) {
+        departmentService.deleteDepartment(id);
+        return ResponseEntity.noContent().build();
+    }
+    public ResponseEntity<Map<String, String>> deleteDepartment(@PathVariable Long id) { {
+    	departmentService.deleteDepartment(id);
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Department deleted successfully");
+        response.put("departmentId", id.toString());
+
+        return ResponseEntity.noContent().build();
+    }
+}
+

@@ -1,0 +1,33 @@
+package com.example.demo.exception;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import java.util.HashMap;
+import java.util.Map;
+
+@RestControllerAdvice
+public class GlobalExceptionHandler {
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Map<String, String> handleValidationExceptions(MethodArgumentNotValidException ex) {
+
+        Map<String, String> errors = new HashMap<>();
+
+        ex.getBindingResult().getAllErrors().forEach((error) -> {
+            String fieldName = ((FieldError) error).getField();
+            String errorMessage = error.getDefaultMessage();
+            errors.put(fieldName, errorMessage);
+        });
+
+        return errors;
+    }
+}
+
+//The MethodArgumentNotValidException is an exception in Spring that is thrown when a request body does not pass validation checks. This typically happens when you annotate a method parameter with @Valid (or @Validated), and the request body violates any validation constraints.
+//In Spring, getBindingResult() is a method that provides access to the validation results for the binding of request parameters (like form fields or request body data) to the Java object. When a request body (e.g., a @RequestBody in a RESTful API) is validated, Spring performs the binding and validation processes using the BindingResult. If the validation fails, this result is captured in the BindingResult.

@@ -1,0 +1,33 @@
+package com.example.demo.model;
+
+import java.util.List;
+
+public class EmployeeProjectResponse {
+    private List<Employee> employees;
+    private long employeeCount;
+
+    public EmployeeProjectResponse(long employeeCount, List<Employee> employees) {
+        this.employees = employees;
+        this.employeeCount = employeeCount;
+    }
+
+    public EmployeeProjectResponse(long employeeCount2, List<Employee> employees2) {
+		// TODO Auto-generated constructor stub
+	}
+
+	public List<Employee> getEmployees() {
+        return employees;
+    }
+
+    public void setEmployees(List<Employee> employees) {
+        this.employees = employees;
+    }
+
+    public long getEmployeeCount() {
+        return employeeCount;
+    }
+
+    public void setEmployeeCount(long employeeCount) {
+        this.employeeCount = employeeCount;
+    }
+}

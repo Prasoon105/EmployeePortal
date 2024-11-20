@@ -1,0 +1,54 @@
+package com.example.demo.service;
+
+
+import com.example.demo.model.Project;
+import com.example.demo.repository.ProjectRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
+
+@Service
+public class ProjectService {
+
+    private final ProjectRepository projectRepository;
+
+    @Autowired
+    public ProjectService(ProjectRepository projectRepository) {
+        this.projectRepository = projectRepository;
+    }
+
+    public List<Project> getAllProjects() {
+        return projectRepository.findAll();
+    }
+
+    public Optional<Project> getProjectById(Long id) {
+        return projectRepository.findById(id);
+    }
+
+    public Project createProject(Project project) {
+        return projectRepository.save(project);
+    }
+
+    public Project updateProject(Long id, Project projectDetails) {
+        // Find the existing project by ID, throw an exception if not found
+        Project project = projectRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Project not found"));
+        project.setPName(projectDetails.getPName());
+        project.setPManagerId(projectDetails.getPManagerId());
+ 
+        return projectRepository.save(project);
+    }
+
+
+    public boolean deleteProject(Long id) {
+        if (projectRepository.existsById(id)) {
+            projectRepository.deleteById(id);
+            return true;
+        } else {
+            return false; 
+        }
+    }
+    
+}

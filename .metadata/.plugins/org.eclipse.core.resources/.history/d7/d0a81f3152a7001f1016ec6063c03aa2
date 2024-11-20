@@ -1,0 +1,81 @@
+//package com.example.demo.exception;
+//
+//import org.springframework.http.HttpStatus;
+//import org.springframework.validation.FieldError;
+//import org.springframework.web.bind.MethodArgumentNotValidException;
+//import org.springframework.web.bind.annotation.ExceptionHandler;
+//import org.springframework.web.bind.annotation.ResponseStatus;
+//import org.springframework.web.bind.annotation.RestControllerAdvice;
+//import java.util.HashMap;
+//import java.util.Map;
+//
+//@RestControllerAdvice
+//public class GlobalExceptionHandler {
+//
+//    @ExceptionHandler(MethodArgumentNotValidException.class)
+//    @ResponseStatus(HttpStatus.BAD_REQUEST)
+//    public Map<String, String> handleValidationExceptions(MethodArgumentNotValidException ex) {
+//
+//        Map<String, String> errors = new HashMap<>();
+//
+//        ex.getBindingResult().getAllErrors().forEach((error) -> {
+//            String fieldName = ((FieldError) error).getField();
+//            String errorMessage = error.getDefaultMessage();
+//            errors.put(fieldName, errorMessage);
+//        });
+//
+//        return errors;
+//    }
+//}
+
+//The MethodArgumentNotValidException is an exception in Spring that is thrown when a request body does not pass validation checks. This typically happens when you annotate a method parameter with @Valid (or @Validated), and the request body violates any validation constraints.
+//BindingResult is an interface provided by Spring, which holds the validation results of the request body or form data.
+/*
+ * ex.getBindingResult():
+ * 
+ * ex refers to the exception object (MethodArgumentNotValidException in this
+ * case) that is thrown when validation fails for the incoming request.
+ * getBindingResult() retrieves the BindingResult from the exception. The
+ * BindingResult is an object that contains the validation errors that occurred
+ * when Spring tried to bind the incoming request data (such as form data or
+ * JSON) to the Java object (like Employee in your case). BindingResult holds
+ * all the errors that occurred during this binding and validation process.
+ * getAllErrors():
+ * 
+ * getAllErrors() is a method on BindingResult that returns a list of all errors
+ * encountered during validation. These errors could be related to fields (e.g.,
+ * "firstName is required") or global errors (not related to a specific field
+ * but rather to the overall object). This method returns a list of ObjectError
+ * instances (which is the superclass of FieldError), representing validation
+ * issues. forEach((error) -> {...}):
+ * 
+ * forEach is a method that allows you to iterate over each ObjectError (which
+ * includes FieldErrors) in the list returned by getAllErrors(). The lambda
+ * expression error -> { ... } represents the action to be performed for each
+ * validation error in the list. String fieldName = ((FieldError)
+ * error).getField();:
+ * 
+ * Each ObjectError in the list can either be a FieldError (which relates to a
+ * specific field, like a form field or a JSON property) or a global error (not
+ * associated with any field). The cast (FieldError) error assumes that the
+ * error is a FieldError (which is common in most cases). getField() is a method
+ * in FieldError that retrieves the name of the field that has the validation
+ * error. For example, if the validation failed for the firstName field,
+ * getField() would return "firstName". String errorMessage =
+ * error.getDefaultMessage();:
+ * 
+ * getDefaultMessage() is a method on ObjectError (and by inheritance on
+ * FieldError). It returns the error message associated with the validation
+ * issue. The error message is usually the message you specified in the
+ * validation annotations (like @NotEmpty(message =
+ * "First name cannot be empty")), or the default message from the validation
+ * constraint. For example, if the firstName field is empty, the message could
+ * be something like "First name cannot be empty". errors.put(fieldName,
+ * errorMessage);:
+ * 
+ * This line adds the validation error to a Map<String, String> called errors.
+ * The map's key is the field name (e.g., firstName), and the value is the error
+ * message (e.g., "First name cannot be empty"). The errors.put() method stores
+ * each validation error, creating a key-value pair for every field validation
+ * failure.
+ */
