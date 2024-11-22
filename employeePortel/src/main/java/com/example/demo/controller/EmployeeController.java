@@ -148,7 +148,7 @@ public class EmployeeController {
         } catch (RuntimeException e) {
             Map<String, String> errorResponse = new HashMap<>();
             errorResponse.put("error", e.getMessage());
-            return ResponseEntity.status(400).body(errorResponse); // Bad Request
+            return ResponseEntity.status(400).body(errorResponse); 
         }
     }
   

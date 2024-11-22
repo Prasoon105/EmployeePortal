@@ -1,0 +1,70 @@
+package com.example.demo.controller;
+
+import com.example.demo.model.Employee;
+import com.example.demo.service.EmployeeService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+@RestController
+@RequestMapping("/emp/employees")
+public class EmployeeController {
+    @Autowired
+    private EmployeeService employeeService;
+    
+    @GetMapping
+    public List<Employee> getAllEmployees() {
+        return employeeService.getAllEmployees();
+    }
+
+    @GetMapping("/{id}")
+    public Employee getEmployeeById(@PathVariable Long id) {
+        return employeeService.getEmployeeById(id).orElse(null);
+    }
+
+    @PostMapping
+    public ResponseEntity<Map<String, String>> addEmployee(@RequestBody Employee employee) {
+        Employee savedEmployee = employeeService.addEmployee(employee);
+        
+        Map<String, String> responseMessage = new HashMap<>();
+        responseMessage.put("message", "Employee added successfully!");
+        responseMessage.put("employeeId", String.valueOf(savedEmployee.getEmpId()));
+        
+        return new ResponseEntity<>(responseMessage, HttpStatus.CREATED);
+    }
+
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Object> updateEmployee(@PathVariable Long id, @RequestBody Employee employee) {
+        Employee updatedEmployee = employeeService.updateEmployee(id, employee);
+        if (updatedEmployee != null) {
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "Employee updated successfully");
+            response.put("employee", updatedEmployee.toString());
+            
+            return ResponseEntity.ok(response);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Employee not found");
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Map<String, String>> deleteEmployee(@PathVariable Long id) {
+        employeeService.deleteEmployee(id);
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Employee deleted successfully");
+        response.put("employeeId", id.toString());
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+    
+}
+
+
+//ResponseEntity is typically used as the return type of controller methods. Here’s how you can use it in different scenarios:
+//Purpose: @RequestParam is used to extract query parameters from the query string of the URL (the part after the ?).
+//Purpose: @PathVariable is used to extract values from the path of the URL (i.e., the part of the URL that is part of the path or route itself).

@@ -1,0 +1,53 @@
+package com.example.demo.model;
+
+
+import jakarta.persistence.*;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
+
+
+@Entity
+public class Employee {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long empId;
+    private String firstName;
+    private String lastName;
+    private Date dob;
+    private String gender;
+    private String email;
+    private String contact;
+    private Date hireDate;
+    private Double salary;
+    private Long pManagerId;
+    private Long rManagerId;
+
+    @Embedded 
+    private Address address;
+
+    @ManyToOne(cascade = { CascadeType.ALL })
+    @JoinColumn(name = "department_id")
+    private Department department;
+
+    @ManyToMany(cascade = { CascadeType.ALL })
+    @JoinTable(name = "employee_project",
+        joinColumns = @JoinColumn(name = "emp_id"),
+        inverseJoinColumns = @JoinColumn(name = "p_id"))
+    private Set<Project> projects = new HashSet<>();
+    
+    
+}
+
+
+

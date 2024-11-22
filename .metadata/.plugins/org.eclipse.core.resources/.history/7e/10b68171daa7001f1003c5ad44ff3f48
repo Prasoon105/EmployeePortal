@@ -1,0 +1,63 @@
+package com.example.demo.controller;
+
+import com.example.demo.model.Employee;
+import com.example.demo.service.EmployeeService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Optional;
+
+@RestController
+@RequestMapping("/emp/employees")
+public class EmployeeController {
+
+    @Autowired
+    private EmployeeService employeeService;
+
+    // Endpoint to get all employees
+    @GetMapping
+    public ResponseEntity<List<Employee>> getAllEmployees() {
+        List<Employee> employees = employeeService.getAllEmployees();
+        return new ResponseEntity<>(employees, HttpStatus.OK);
+    }
+
+    // Endpoint to get an employee by ID
+    @GetMapping("/{empId}")
+    public ResponseEntity<Employee> getEmployeeById(@PathVariable Long empId) {
+        Optional<Employee> employee = employeeService.getEmployeeById(empId);
+        return employee.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    // Endpoint to create or update an employee
+    @PostMapping
+    public ResponseEntity<Employee> createEmployee(@RequestBody Employee employee) {
+        Employee savedEmployee = employeeService.saveEmployee(employee);
+        return new ResponseEntity<>(savedEmployee, HttpStatus.CREATED);
+    }
+
+    // Endpoint to update an existing employee
+    @PutMapping("/{empId}")
+    public ResponseEntity<Employee> updateEmployee(@PathVariable Long empId, @RequestBody Employee employee) {
+        Optional<Employee> existingEmployee = employeeService.getEmployeeById(empId);
+        if (existingEmployee.isPresent()) {
+            employee.setEmpId(empId);  // Set the existing employee ID
+            Employee updatedEmployee = employeeService.saveEmployee(employee);
+            return new ResponseEntity<>(updatedEmployee, HttpStatus.OK);
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    // Endpoint to delete an employee by ID
+    @DeleteMapping("/{empId}")
+    public ResponseEntity<Void> deleteEmployee(@PathVariable Long empId) {
+        Optional<Employee> existingEmployee = employeeService.getEmployeeById(empId);
+        if (existingEmployee.isPresent()) {
+            employeeService.deleteEmployee(empId);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return ResponseEntity.notFound().build();
+    }
+}

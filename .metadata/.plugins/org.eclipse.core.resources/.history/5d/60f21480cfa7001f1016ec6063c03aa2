@@ -1,0 +1,86 @@
+package com.example.demo.model;
+
+
+import jakarta.persistence.*;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
+
+
+@Entity
+@Table(name= "Employee")  
+public class Employee {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long empId;
+    private String firstName;
+    private String lastName;
+    private Date dob;
+    private String gender;
+    private String email;
+    @NotEmpty(message = "contact number is mandatory")
+    @Pattern(regexp = "^[0-9]{10}$", message = "Contact number must be exactly 10 digits")
+    private String contact;
+    @Column(name = "hire_date")
+    @NotNull(message = "date of birth is mandatory")
+    @Temporal(TemporalType.DATE) 
+    private Date hireDate;
+    @NotNull(message = "salary is mandatory")
+    private Double salary;
+    private Long pManagerId;
+    private Long rManagerId;
+
+    @NotNull(message = "Address cannot be null")
+    @Valid
+    @Embedded 
+    private Address address;
+
+    @ManyToOne(cascade = { CascadeType.ALL })
+    @JoinColumn(name = "department_id")
+    private Department department;
+
+    @ManyToMany(cascade = { CascadeType.ALL })
+    @JoinTable(name = "employee_project",
+        joinColumns = @JoinColumn(name = "emp_id"),
+        inverseJoinColumns = @JoinColumn(name = "p_id"))
+    private Set<Project> projects = new HashSet<>();
+    
+    
+
+    @PrePersist
+    @PreUpdate
+    public void formatDates() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        this.dob = formatDate(this.dob, dateFormat);
+        this.hireDate = formatDate(this.hireDate, dateFormat);
+    }
+    
+    // Helper method to format the date
+    private Date formatDate(Date date, SimpleDateFormat dateFormat) {
+        if (date != null) {
+            try {
+                String formattedDate = dateFormat.format(date);
+                return dateFormat.parse(formattedDate);
+            } catch (Exception e) {
+                // Handle exception if necessary
+                e.printStackTrace();
+            }
+        }
+        return date;
+    }
+    
+    
+}
+
+
+

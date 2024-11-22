@@ -1,0 +1,48 @@
+package com.example.demo.service;
+
+import com.example.demo.model.Department;
+import com.example.demo.repository.DepartmentRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
+
+@Service
+public class DepartmentService {
+    @Autowired
+    private DepartmentRepository departmentRepository;
+
+    public List<Department> getAllDepartments1() {
+        return departmentRepository.findAll();
+    }
+
+    public Optional<Department> getDepartmentById(Long id) {
+        return departmentRepository.findById(id);
+    }
+
+    public ResponseEntity<Department> addDepartment(Department department) {
+        try {
+            Department savedDepartment = departmentRepository.save(department);
+            return ResponseEntity.status(HttpStatus.CREATED).body(savedDepartment);  // 201 Created
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();  // 400 Bad Request
+        }
+    }
+
+    public Department updateDepartment(Long id, Department departmentDetails) {
+        Department department = departmentRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Department not found"));
+
+        department.setDepName(departmentDetails.getDepName());
+        department.setRManagerId(departmentDetails.getRManagerId());
+
+        return departmentRepository.save(department);
+    }
+
+    public void deleteDepartment(Long id) {
+        departmentRepository.deleteById(id);
+    }
+}

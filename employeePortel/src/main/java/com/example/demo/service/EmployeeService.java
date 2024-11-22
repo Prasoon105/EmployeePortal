@@ -35,11 +35,6 @@ public class EmployeeService {
         		.orElseThrow(() -> new RuntimeException("Employee not found"));
         employee.setFirstName(employeeDetails.getFirstName());
         employee.setLastName(employeeDetails.getLastName());
-        employee.setDob(employeeDetails.getDob());
-        employee.setGender(employeeDetails.getGender());
-        employee.setEmail(employeeDetails.getEmail());
-        employee.setContact(employeeDetails.getContact());
-        employee.setHireDate(employeeDetails.getHireDate());
         employee.setSalary(employeeDetails.getSalary());
         employee.setPManagerId(employeeDetails.getPManagerId());
         employee.setRManagerId(employeeDetails.getRManagerId());
@@ -67,7 +62,7 @@ public class EmployeeService {
     }
     
     public long countEmployeesByProjectId(Long projectId) {
-        return employeeRepository.countByProjects_pId(projectId);
+        return employeeRepository.countByProjectspId(projectId);
     }
     
     public Employee assignDepartmentToEmployee(Long employeeId, Long departmentId) {

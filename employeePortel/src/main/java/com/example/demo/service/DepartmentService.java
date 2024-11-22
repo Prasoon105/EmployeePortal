@@ -4,7 +4,6 @@ import com.example.demo.model.Department;
 import com.example.demo.repository.DepartmentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -38,5 +37,14 @@ public class DepartmentService {
     public void deleteDepartment(Long id) {
         departmentRepository.deleteById(id);
     }
-}
+    
+    public Department assignManagerToDepartment(Long depId, Long rManagerId) {
+        Department department = departmentRepository.findById(depId)
+                .orElseThrow(() -> new RuntimeException("Department not found"));
 
+        department.setRManagerId(rManagerId);
+
+        return departmentRepository.save(department);
+    }
+    
+}

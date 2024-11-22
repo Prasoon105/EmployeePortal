@@ -27,25 +27,25 @@ public class Employee {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long empId;
-    @NotEmpty(message = "first name is mandatory")
+    @NotEmpty(message = "First name cannot be empty. Please enter a valid first name.")
     private String firstName;
-    @NotEmpty(message = "last name is mandatory")
+    @NotEmpty(message = "Last name cannot be empty. Please enter a valid last name.")
     private String lastName;
     @Column(name = "birth_date")
-    @NotNull(message = "date of birth is mandatory")
-    @Temporal(TemporalType.DATE) 
+    @NotNull(message = "birth_date cannot be empty.")
+    @Temporal(TemporalType.DATE)
     private Date dob;
-    @NotEmpty(message = "gender is mandatory") //@notEmpty only of string and collection
+    @NotEmpty(message = "Gender cannot be empty. Please select your gender.")
     private String gender;
-    @NotEmpty(message = "email is mandatory")
-    @Email(message = "email not is mandatory")
+    @NotEmpty(message = "Please enter your email address to proceed.")
+    @Email(message = "Please provide a valid email address.")
     private String email;
     @NotEmpty(message = "contact number is mandatory")
     @Pattern(regexp = "^[0-9]{10}$", message = "Contact number must be exactly 10 digits")
     private String contact;
     @Column(name = "hire_date")
-    @NotNull(message = "date of birth is mandatory")
-    @Temporal(TemporalType.DATE) 
+    @NotNull(message = "Hire date is mandatory")
+    @Temporal(TemporalType.DATE)
     private Date hireDate;
     @NotNull(message = "salary is mandatory")
     private Double salary;
@@ -66,33 +66,23 @@ public class Employee {
         joinColumns = @JoinColumn(name = "emp_id"),
         inverseJoinColumns = @JoinColumn(name = "p_id"))
     private Set<Project> projects = new HashSet<>();
-    
-    
 
-    @PrePersist
-    @PreUpdate
-    public void formatDates() {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-        this.dob = formatDate(this.dob, dateFormat);
-        this.hireDate = formatDate(this.hireDate, dateFormat);
-    }
+	public Long getPManagerId() {
+		return pManagerId;
+	}
+
+	public void setPManagerId(Long pManagerId) {
+		this.pManagerId = pManagerId;
+	}
+
+	public Long getRManagerId() {
+		return rManagerId;
+	}
+
+	public void setRManagerId(Long rManagerId) {
+		this.rManagerId = rManagerId;
+	}
     
-    // Helper method to format the date
-    private Date formatDate(Date date, SimpleDateFormat dateFormat) {
-        if (date != null) {
-            try {
-                String formattedDate = dateFormat.format(date);
-                return dateFormat.parse(formattedDate);
-            } catch (Exception e) {
-                // Handle exception if necessary
-                e.printStackTrace();
-            }
-        }
-        return date;
-    }
     
     
 }
-
-
-

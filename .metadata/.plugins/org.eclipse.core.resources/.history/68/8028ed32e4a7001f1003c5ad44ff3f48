@@ -1,0 +1,40 @@
+package com.example.demo.model;
+
+import jakarta.persistence.*;
+import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.util.Date;
+import java.util.Set;
+
+@Entity
+@Data 
+@Valid
+@NoArgsConstructor
+@AllArgsConstructor
+public class Project {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long pId;
+
+    private String pName;
+    private Long pManagerId;
+
+    private String pStatus;
+    private Date pStartDate;
+    private Date pEndDate;
+    
+
+	public Project(String pName, Long pManagerId, String pStatus, Date pStartDate, Date pEndDate) {
+		this.pName = pName;
+		this.pManagerId = pManagerId;
+		this.pStatus = pStatus;
+		this.pStartDate = pStartDate;
+		this.pEndDate = pEndDate;
+	}
+
+    
+	
+}

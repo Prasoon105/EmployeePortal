@@ -1,0 +1,53 @@
+package com.example.demo.service;
+
+import com.example.demo.model.Department;
+import com.example.demo.model.Employee;
+import com.example.demo.repository.EmployeeRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
+
+@Service
+public class EmployeeService {
+    @Autowired
+    private EmployeeRepository employeeRepository;
+    
+    @Autowired
+    private DepartmentService departmentService;
+
+    public List<Employee> getAllEmployees() {
+        return employeeRepository.findAll();
+    }
+
+    public Optional<Employee> getEmployeeById(Long id) {
+        return employeeRepository.findById(id);
+    }
+
+    public Employee addEmployee(Employee employee) {
+    	System.out.println(employee.toString());
+        return employeeRepository.save(employee);
+    }
+
+    public Employee updateEmployee(Long id, Employee employeeDetails) {
+        Employee employee = employeeRepository.findById(id)
+        		.orElseThrow(() -> new RuntimeException("Employee not found"));
+        employee.setFirstName(employeeDetails.getFirstName());
+        employee.setLastName(employeeDetails.getLastName());
+        employee.setDob(employeeDetails.getDob());
+        employee.setGender(employeeDetails.getGender());
+        employee.setEmail(employeeDetails.getEmail());
+        employee.setContact(employeeDetails.getContact());
+        employee.setHireDate(employeeDetails.getHireDate());
+        employee.setSalary(employeeDetails.getSalary());
+        employee.setpManagerId(employeeDetails.getpManagerId());
+        employee.setrManagerId(employeeDetails.getrManagerId());
+        return employeeRepository.save(employee);
+    }
+
+    public void deleteEmployee(Long id) {
+        employeeRepository.deleteById(id);
+    }
+    
+}

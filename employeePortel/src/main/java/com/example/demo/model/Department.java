@@ -16,7 +16,7 @@ public class Department {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long depId;
-    @NotEmpty(message = "department name is mandatory")
+    @NotEmpty(message = "Department name cannot be empty. Please enter a valid department name.")
     private String depName;
     private Long rManagerId;
     
